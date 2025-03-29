@@ -109,9 +109,24 @@ export default function Profile() {
                             "Authorization": `Bearer ${token.result}`
                         },
                         body: JSON.stringify({ pass: oldPass, newPass: newPass } as CheckerUserReset)
+                    }).then((res) => {
+                        if (res.ok) {
+                            onChangeResetError('Password reset successfully')
+
+                        } else {
+                            res.json().then(er => {
+                                onChangeResetError(`[${res.status}]${er.error}`)
+                            })
+                        }
+                        onChangeNewPass('')
+                        onChangeOldPass('')
+                        onChangeRepeatNewPass('')
                     })
                 } else {
                     onChangeResetError(`You're not logged in`);
+                    onChangeNewPass('')
+                    onChangeOldPass('')
+                    onChangeRepeatNewPass('')
                     return;
                 }
             });
@@ -150,7 +165,7 @@ export default function Profile() {
                             placeholderTextColor={'#888'}
                         />
                         <Button color={"green"} title="Log in" onPress={() => { login() }} />
-                        <Text style={{ color: "red" }}>{errorText}</Text>
+                        <Text style={{ color: "white" }}>{errorText}</Text>
                     </View>
                 }
 
@@ -159,7 +174,7 @@ export default function Profile() {
                     <Text style={{ color: 'lightgreen', padding: 15, fontSize: 20 }}>Logged in succesfully!</Text>
                     <Button color={'red'} title="Log out" onPress={() => { logout() }} />
                     <View>
-                        <Text style={{ color: 'red' }}>{resetError}</Text>
+                        <Text style={{ color: 'white' }}>{resetError}</Text>
                         <TextInput placeholder="Old password" placeholderTextColor='#888' style={styles.input} onChangeText={onChangeOldPass} secureTextEntry={true} />
                         <TextInput placeholder="New password" placeholderTextColor='#888' style={styles.input} onChangeText={onChangeNewPass} secureTextEntry={true} />
                         <TextInput placeholder="Repeat new password" placeholderTextColor='#888' style={styles.input} onChangeText={onChangeRepeatNewPass} secureTextEntry={true} />

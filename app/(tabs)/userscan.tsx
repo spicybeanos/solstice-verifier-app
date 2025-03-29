@@ -119,22 +119,29 @@ export default function UserScan() {
                     </View>
                 </CameraView>
             </View>
-            <TextInput style={styles.input} placeholderTextColor={'#888'} placeholder='UserID' onChangeText={onChangeQRCode} value={qrCode} />
             <View>
-                <Button title='Get info' onPress={() => { getUserInfo() }} />
-                <Button title='Clear' onPress={() => { onChangeUserInfo(null); onChangedError(''); }} />
+                <Text style={{ color: 'white' }}>User ID</Text>
+                <TextInput style={styles.input} placeholderTextColor={'#888'} placeholder='UserID' onChangeText={onChangeQRCode} value={qrCode} />
             </View>
-            <View>
+            <Button title='Get info' onPress={() => { getUserInfo() }} />
+            <Button title='Clear' onPress={() => { onChangeUserInfo(null); onChangedError(''); }} />
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    margin: 0
+                }}
+            >
                 <Text style={{ fontSize: 16, color: 'red' }}>{error}</Text>
+                {userInfo != null &&
+                    <View>
+                        <Text style={styles.text}>Name : {`${userInfo.user.first_name} ${userInfo.user.last_name}`}</Text>
+                        <Text style={styles.text}>Pass : {`${userInfo.pass == null ? 'No pass owned' : userInfo.pass.name}`}</Text>
+                        <Text style={styles.text}>Phone number : <Text style={{ fontFamily: 'monospace' }}>{`+91-${userInfo.user.phone_number?.substring(0, userInfo.user.phone_number.length / 2)} ${userInfo.user.phone_number?.substring(userInfo.user.phone_number.length / 2, userInfo.user.phone_number.length)}`}</Text></Text>
+                        <Text style={styles.text}>Reg No : <Text style={{ fontFamily: 'monospace' }}>{`${userInfo.user.mahe_registration_number ?? 'Not a MAHE student'}`}</Text></Text>
+                    </View>
+                }
             </View>
-            {userInfo != null &&
-                <View>
-                    <Text style={styles.text}>Name : {`${userInfo.user.first_name} ${userInfo.user.last_name}`}</Text>
-                    <Text style={styles.text}>Pass : {`${userInfo.pass == null ? 'No pass owned' : userInfo.pass.name}`}</Text>
-                    <Text style={styles.text}>Phone number : {`+91-${userInfo.user.phone_number}`}</Text>
-                </View>
-            }
-
         </View>
     );
 }
@@ -144,11 +151,12 @@ const styles = StyleSheet.create({
         width: 300,
         height: 50,
         borderRadius: 10,
-        margin: 12,
+        margin: 3,
         borderWidth: 1,
         padding: 10,
         borderColor: "#fff",
         color: '#fff',
+        fontFamily: 'monospace'
     },
     container: {
         backgroundColor: '#25292e',
