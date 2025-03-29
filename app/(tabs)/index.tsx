@@ -19,6 +19,7 @@ export default function Index() {
       </View>
       <Text style={{ color: '#ffffff', fontSize: 60 }}>Hi!</Text>
       <Text style={styles.text}>In this app you can check user details using thier QR</Text>
+      <Text style={styles.text}>Make sure you have a good internet connection!</Text>
       <Text style={styles.text}>You can cut ticket when you give them a band. The pass needed to get the ticket cut can be set on the website.</Text>
       <Text style={styles.text}>For more information or any help, you may contact me at <Text style={{ fontFamily: 'monospace' }}>+91-86522 07970</Text> or email me at <Text style={{ fontFamily: 'monospace' }}>aryan.d.dalal@gmail.com</Text></Text>
     </View>
