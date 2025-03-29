@@ -37,6 +37,15 @@ export default function TabLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="userscan"
+                options={{
+                    title: 'User Scan',
+                    tabBarIcon: ({ color, focused }) => (
+                        <Ionicons name={focused ? 'id-card' : 'id-card-outline'} color={color} size={24} />
+                    ),
+                }}
+            />
         </Tabs>
     );
 }

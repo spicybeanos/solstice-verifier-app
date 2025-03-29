@@ -8,15 +8,19 @@ import type { Result } from "@/components/Result";
 import { loadData, saveData } from "@/components/PersistantStorage";
 const URL = 'https://solstice.mitblrfest.org';
 
-export interface CheckerUserLogin {
+interface CheckerUserLogin {
     user: string;
     pass: string;
 }
-export interface CheckerUserLoginResponse {
+interface CheckerUserLoginResponse {
     token: string;
 }
-export interface CheckerUserLoginError {
+interface CheckerUserLoginError {
     error: string;
+}
+interface CheckerUserReset {
+    pass: string;
+    newPass: string;
 }
 
 export default function Profile() {
@@ -24,6 +28,11 @@ export default function Profile() {
     const [password, onChangePassword] = useState("")
     const [loggedIn, onChangeLoggedIn] = useState(false);
     const [errorText, onChangedError] = useState('')
+
+    const [oldPass, onChangeOldPass] = useState('');
+    const [newPass, onChangeNewPass] = useState('');
+    const [repeatNewPass, onChangeRepeatNewPass] = useState('');
+    const [resetError, onChangeResetError] = useState('')
 
     useEffect(() => {
         checkLoggedIn();
@@ -63,18 +72,51 @@ export default function Profile() {
         }
     }
 
-    const logout = async () => {
-        const token = loadData('token');
-        const res = await fetch(`${URL}/check/logout`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-        });
-        await saveData('token', '');
-        await saveData('username', '')
-        onChangeLoggedIn(false);
+    const logout = () => {
+        loadData('token').then((token) => {
+            if (token.success) {
+                fetch(`${URL}/check/logout`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token.result as string}`
+                    },
+                }).then(() => {
+                    saveData('token', '').then(() => {
+                        saveData('username', '').then(() => {
+                            onChangeLoggedIn(false);
+                        })
+                    })
+                });
+            } else {
+                onChangeResetError("You're not logged in.");
+                return;
+            }
+        })
+    }
+
+    function resetPassword() {
+        if (newPass != repeatNewPass) {
+            onChangeResetError('New password not same as repeat new password.')
+        } else {
+            onChangeResetError('');
+            loadData('token').then((token) => {
+                if (token.success) {
+                    fetch(`${URL}/check/reset`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token.result}`
+                        },
+                        body: JSON.stringify({ pass: oldPass, newPass: newPass } as CheckerUserReset)
+                    })
+                } else {
+                    onChangeResetError(`You're not logged in`);
+                    return;
+                }
+            });
+
+        }
     }
 
     return (
@@ -97,6 +139,7 @@ export default function Profile() {
                         <Text style={{ color: '#fff' }}>Username</Text>
                         <TextInput
                             style={styles.input}
+                            placeholderTextColor={'#888'}
                             onChangeText={onChangeUsername}
                         />
                         <Text style={{ color: '#fff' }}>Password</Text>
@@ -104,6 +147,7 @@ export default function Profile() {
                             style={styles.input}
                             onChangeText={onChangePassword}
                             secureTextEntry={true}
+                            placeholderTextColor={'#888'}
                         />
                         <Button color={"green"} title="Log in" onPress={() => { login() }} />
                         <Text style={{ color: "red" }}>{errorText}</Text>
@@ -114,6 +158,13 @@ export default function Profile() {
                     <Text style={{ fontSize: 40, color: '#ffffff' }}>{username}</Text>
                     <Text style={{ color: 'lightgreen', padding: 15, fontSize: 20 }}>Logged in succesfully!</Text>
                     <Button color={'red'} title="Log out" onPress={() => { logout() }} />
+                    <View>
+                        <Text style={{ color: 'red' }}>{resetError}</Text>
+                        <TextInput placeholder="Old password" placeholderTextColor='#888' style={styles.input} onChangeText={onChangeOldPass} secureTextEntry={true} />
+                        <TextInput placeholder="New password" placeholderTextColor='#888' style={styles.input} onChangeText={onChangeNewPass} secureTextEntry={true} />
+                        <TextInput placeholder="Repeat new password" placeholderTextColor='#888' style={styles.input} onChangeText={onChangeRepeatNewPass} secureTextEntry={true} />
+                        <Button title="Reset Password" onPress={() => { resetPassword() }} />
+                    </View>
                 </View>}
 
             </SafeAreaView>
