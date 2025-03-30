@@ -1,6 +1,7 @@
 import { displayDateTime } from '@/components/DisplayTime';
 import { loadData } from '@/components/PersistantStorage';
 import { CameraView, CameraType, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -336,6 +337,8 @@ const styles = StyleSheet.create({
     message: {
         textAlign: 'center',
         paddingBottom: 10,
+        color:"#fff",
+        padding:10
     },
 });
 

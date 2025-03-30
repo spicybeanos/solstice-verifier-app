@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, Image } from "react-native";
 import { Link } from 'expo-router';
+import React from "react";
 
 export default function Index() {
   return (
@@ -15,7 +16,7 @@ export default function Index() {
       <View style={{
         width: 300, alignItems: "center",
       }}>
-        <Image source={require('@/assets/images/white_sol.png')} />
+        <Image source={require('@/assets/images/white_sol.png')} width={20}/>
       </View>
       <Text style={{ color: '#ffffff', fontSize: 60 }}>Hi!</Text>
       <Text style={styles.text}>In this app you can check user details using thier QR</Text>
